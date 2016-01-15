@@ -14,7 +14,9 @@ from lxml import etree
 from lib import kookoo_lib
 # Create your views here.
 
-#test commit
+#path_to_automation= '/home/shobhit/attivo/Attivo_Automation_Tools/automation_v2/'
+#path_to_config= path_to_automation+'config'
+#global_path= os.getcwd()
 
 def api_v1_main(request):
 	if request.method=='GET':

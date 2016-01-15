@@ -26,3 +26,32 @@ class Hangup(models.Model):
 	#Disconnection
 	#{u'called_number': [u'911130803946'], u'cid': [u'8041169706'], u'process': [u'none'],
 	# u'total_call_duration': [u'36'], u'sid': [u'9465281810416375'], u'message': [u'500 Internal Server Error'], u'event': [u'Disconnect']}
+
+class Page(models.Model):
+
+	page_id= models.CharField(max_length=255,primary_key=True)
+	page_name=models.CharField(max_length=255, unique=False)
+	likes = models.IntegerField(null=True)
+    talking_about_count = models.IntegerField(null=True)
+    time_stamp = models.DateTimeField(auto_now_add=True)
+
+class Posts(models.Model):
+
+	page_id=models.ForeignKey(Page)
+	post_id=models.CharField(max_length=255,primary_key=True)
+	message=models.TextField(null=True)
+	description=models.TextField(null=True)
+	created_time=models.CharField(max_length=255, unique=False)
+	updated_time=models.CharField(max_length=255, unique=False)
+	time_stamp = models.DateTimeField(auto_now_add=True)
+
+#class Places(model.Model):
+#
+#
+
+class Tag_table(models.Model):
+	page_id=models.ForeignKey(Posts)
+	place=models.CharField(max_length=255, unique=False)
+	phone=models.CharField(max_length=255, unique=False)
+	blood_group=models.CharField(max_length=255, unique=False)
+	unit_req=models.CharField(max_length=255, unique=False)
