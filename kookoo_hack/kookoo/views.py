@@ -14,7 +14,9 @@ from lxml import etree
 from lib import kookoo_lib
 # Create your views here.
 
-#test commit
+#path_to_automation= '/home/shobhit/attivo/Attivo_Automation_Tools/automation_v2/'
+#path_to_config= path_to_automation+'config'
+#global_path= os.getcwd()
 
 def api_v1_main(request):
 	if request.method=='GET':
@@ -64,7 +66,7 @@ def api_v1_main(request):
 				print 35
 				return HttpResponse(data, content_type='application/xml' )
 
-			elif request.get_or_create['event']=='GotDTMF':
+			elif request.GET['event']=='GotDTMF':
 				#event=GotDTMF&data={the digits entered by the caller}&sid={call id}
 				if request.GET['data']=='1':
 					data=kookoo_lib.first_response(message='1',is_text=False,format_lan='1',lang="EN")
