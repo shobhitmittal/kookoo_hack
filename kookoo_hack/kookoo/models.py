@@ -8,9 +8,7 @@ class Call(models.Model):
 	cid=models.CharField(max_length=255, unique=False)
 	called_number=models.CharField(max_length=255, unique=False)
 	event=models.CharField(max_length=255, unique=False)
-    time_stamp = models.DateTimeField(auto_now_add=True)
-	#http://yourapp.com/ivr.php?event=NewCall&cid={caller id}&called_number={the number which was called}&
-	#sid={unique id of the call}&circle={telecom circle of the caller}&operator={the telecom operator of the caller}
+	time_stamp = models.DateTimeField(auto_now_add=True)
 
 class Hangup(models.Model):
 	
@@ -20,6 +18,11 @@ class Hangup(models.Model):
 	cid=models.CharField(max_length=255, unique=False)
 	called_number=models.CharField(max_length=255, unique=False)
 	event=models.CharField(max_length=255, unique=False)
-    time_stamp = models.DateTimeField(auto_now_add=True)
+	message=models.TextField(null=False,default='empty')
+	time_stamp = models.DateTimeField(auto_now_add=True)
+	#hangup
 	#{u'called_number': [u'911130803946'], u'cid': [u'8041169706'],
 	#u'process': [u'none'], u'total_call_duration': [u'13'], u'sid': [u'1104528084751171'], u'event': [u'Hangup']}
+	#Disconnection
+	#{u'called_number': [u'911130803946'], u'cid': [u'8041169706'], u'process': [u'none'],
+	# u'total_call_duration': [u'36'], u'sid': [u'9465281810416375'], u'message': [u'500 Internal Server Error'], u'event': [u'Disconnect']}
