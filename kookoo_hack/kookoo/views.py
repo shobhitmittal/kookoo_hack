@@ -95,5 +95,5 @@ def api_v1_fb_parse(request):
 				print (page_data_save, page_data_save_status)
 				fb.get_posts_data(str(page_data['id']),long_lived_access_token)
 				response_data[page]=True
-		return HttpResponse(json.dumps(response_data), content_type="application/json")
+			return HttpResponse(json.dumps(response_data), content_type="application/json")
 	
