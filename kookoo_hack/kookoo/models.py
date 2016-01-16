@@ -45,7 +45,7 @@ class Page(models.Model):
 
 class Posts(models.Model):
 
-	post_id=models.ForeignKey(Page)
+	page_id=models.ForeignKey(Page)
 	post_id=models.CharField(max_length=255,primary_key=True)
 	message=models.TextField(null=True)
 	description=models.TextField(null=True)
@@ -53,13 +53,23 @@ class Posts(models.Model):
 	updated_time=models.CharField(max_length=255, unique=False)
 	time_stamp = models.DateTimeField(auto_now_add=True)
 
-#class Places(model.Model):
-#
-#
+class Places(models.Model):
+	place = models.CharField(max_length=255, primary_key=True)
+	telecom_circle = models.CharField(max_length=255, unique=False)
+	time_stamp = models.DateTimeField(auto_now_add=True)
+
+class Place_aliases(models.Model):
+	place = models.CharField(max_length=255, primary_key=True)
+	alias = models.CharField(max_length=255, unique=False)
+
+class Blood_group(models.Model):
+	group = models.CharField(max_length=255, unique=True)
+	alias = models.CharField(max_length=255, unique=False)
 
 class Tag_table(models.Model):
-	page_id=models.ForeignKey(Posts)
-	place=models.CharField(max_length=255, unique=False)
+	post_id=models.ForeignKey(Posts)
+	place = models.ForeignKey(Places)
 	phone=models.CharField(max_length=255, unique=False)
 	blood_group=models.CharField(max_length=255, unique=False)
 	unit_req=models.CharField(max_length=255, unique=False)
+	time_stamp = models.DateTimeField(auto_now_add=True)
