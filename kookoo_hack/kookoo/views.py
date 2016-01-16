@@ -13,7 +13,6 @@ from lxml import etree
 from lib import kookoo_lib
 from lib import fb
 from lib import twitter
-from lib import load_data
 
 def api_v1_main(request):
 	if request.method=='GET':
@@ -88,14 +87,23 @@ def api_v1_fb_parse(request):
 		get_long_lived_access_token= models.dev.objects.values('access_token').get(dev_name= dev_name)
 		long_lived_access_token=get_long_lived_access_token['access_token']
 		response_data={}
-		print request.GET['fb_source'].split(',')
-		for page in request.GET['fb_source'].split(','):
-			page_data= fb.get_page_data(page,long_lived_access_token)
-			print page_data
-			(page_data_save, page_data_save_status)= models.Page.objects.update_or_create(page_id=str(page_data['id']), defaults={'page_name': page_data['name'],'likes': page_data['likes'],'talking_about_count': page_data['talking_about_count']})
-			print (page_data_save, page_data_save_status)
-			fb.get_posts_data(str(page_data['id']),long_lived_access_token)
-			response_data[page]=True
+		if 'fb_source' in request.GET:
+			print request.GET['fb_source'].split(',')
+			for page in request.GET['fb_source'].split(','):
+				page_data= fb.get_page_data(page,long_lived_access_token)
+				print page_data
+				(page_data_save, page_data_save_status)= models.Page.objects.update_or_create(page_id=str(page_data['id']), defaults={'page_name': page_data['name'],'likes': page_data['likes'],'talking_about_count': page_data['talking_about_count']})
+				print (page_data_save, page_data_save_status)
+				fb.get_posts_data(str(page_data['id']),long_lived_access_token)
+				response_data[page]=True
+		if 'twitter_source' in request.GET:
+			print request.GET['twitter_source'].split(',')
+			for twitter_handle in request.GET['twitter_source'].split(','):
+				twitter_handle_data= twitter.fetch_twitter_id(twitter_handle)
+				(handle_data_save, handle_data_save_status)= models.Page.objects.update_or_create(page_id=str(twitter_handle_data['id']), defaults={'page_name': str(twitter_handle),'likes': twitter_handle_data['follower_count']})
+				print (handle_data_save, handle_data_save_status)
+				twitter.fetch_twitter_post(twitter_handle_data['id'])
+				response_data[twitter_handle]=True
 		return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 def api_do_settings(request):		
@@ -103,4 +111,4 @@ def api_do_settings(request):
 		load_data.load_citydetails()		
 		load_data.load_cityaliases()		
 		load_data.load_bloodgroup_aliases()		
-		return HttpResponse(json.dumps({'status':"Initial setup done"}), content_type="application/json")			
+		return HttpResponse(json.dumps({'status':"Initial setup done"}), content_type="application/json")
