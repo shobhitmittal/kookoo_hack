@@ -45,7 +45,7 @@ class Page(models.Model):
 
 class Posts(models.Model):
 
-	page_id=models.ForeignKey(Page)
+	post_id=models.ForeignKey(Page)
 	post_id=models.CharField(max_length=255,primary_key=True)
 	message=models.TextField(null=True)
 	description=models.TextField(null=True)
@@ -67,6 +67,7 @@ class Blood_group(models.Model):
 	alias = models.CharField(max_length=255, unique=False)
 
 class Tag_table(models.Model):
+	
 	post_id=models.ForeignKey(Posts)
 	place = models.ForeignKey(Places)
 	phone=models.CharField(max_length=255, unique=False)
