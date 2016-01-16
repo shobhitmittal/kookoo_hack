@@ -20,5 +20,6 @@ from kookoo import views
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^apiv1$', views.api_v1_main, name='api_v1'),
+    url(r'^apiv1_fb_cron$', views.api_v1_fb_parse, name='api_v1_fb_parse'),
 
 ]

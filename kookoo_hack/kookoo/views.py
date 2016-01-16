@@ -1,22 +1,17 @@
-#from forms import testForm
 from django.shortcuts import render
 from django.contrib import auth
 from django.http import HttpResponseRedirect, HttpResponse 
 from django.shortcuts import render_to_response
 from django.template import RequestContext, loader, Context
-from django.conf import settings
 import models
+from django.conf import settings
 import os
 import json
 import time
 import re
 from lxml import etree
 from lib import kookoo_lib
-# Create your views here.
-
-#path_to_automation= '/home/shobhit/attivo/Attivo_Automation_Tools/automation_v2/'
-#path_to_config= path_to_automation+'config'
-#global_path= os.getcwd()
+from lib import fb
 
 def api_v1_main(request):
 	if request.method=='GET':
@@ -76,4 +71,29 @@ def api_v1_main(request):
 			else:
 				data= kookoo_lib.first_response(message='Some Error Occured.Please try again',is_text=True,format_lan=None)
 				return HttpResponse(data, content_type='application/xml' )
+
+def api_v1_fb_parse(request):
+	if request.method=='GET':
+		print request.GET
+		print settings.FACEBOOK_ACCESS_TOKEN
+		dev_name=settings.FACEBOOK_ACCESS_TOKEN['dev_name']
+		long_lived_access_token_exists= models.dev.objects.filter(dev_name= dev_name).exists()
+		if long_lived_access_token_exists is False:
+
+			long_live_access_token_dict=fb.get_long_access_token()
+			(long_lived_access_token_save, long_lived_access_token_save_status)= models.dev.objects.update_or_create(dev_name=str(dev_name), defaults={'access_token': long_live_access_token_dict['long_lived_access_token'],'expiry_date': long_live_access_token_dict['expires_at']})
+			print (long_lived_access_token_save, long_lived_access_token_save_status)
+		else:
+			get_long_lived_access_token= models.dev.objects.values('access_token').get(dev_name= dev_name)
+			long_lived_access_token=get_long_lived_access_token['access_token']
+			response_data={}
+			print request.GET['fb_source'].split(',')
+			for page in request.GET['fb_source'].split(','):
+				page_data= fb.get_page_data(page,long_lived_access_token)
+				print page_data
+				(page_data_save, page_data_save_status)= models.Page.objects.update_or_create(page_id=str(page_data['id']), defaults={'page_name': page_data['name'],'likes': page_data['likes'],'talking_about_count': page_data['talking_about_count']})
+				print (page_data_save, page_data_save_status)
+				fb.get_posts_data(str(page_data['id']),long_lived_access_token)
+				response_data[page]=True
+		return HttpResponse(json.dumps(response_data), content_type="application/json")
 	
