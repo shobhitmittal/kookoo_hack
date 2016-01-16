@@ -15,7 +15,6 @@ from lib import fb
 from lib import twitter
 from lib import load_data
 
-
 def api_v1_main(request):
 	if request.method=='GET':
 		print request.GET
@@ -98,4 +97,10 @@ def api_v1_fb_parse(request):
 			fb.get_posts_data(str(page_data['id']),long_lived_access_token)
 			response_data[page]=True
 		return HttpResponse(json.dumps(response_data), content_type="application/json")
-	
+
+def api_do_settings(request):		
+	if request.method=='GET':		
+		load_data.load_citydetails()		
+		load_data.load_cityaliases()		
+		load_data.load_bloodgroup_aliases()		
+		return HttpResponse(json.dumps({'status':"Initial setup done"}), content_type="application/json")			
