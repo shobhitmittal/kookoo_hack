@@ -1,7 +1,6 @@
 from facepy.utils import get_extended_access_token
 from facepy import GraphAPI
 import json
-import timeit
 from django.conf import settings
 from kookoo import models
 from django.db import transaction

@@ -45,7 +45,7 @@ class Page(models.Model):
 
 class Posts(models.Model):
 
-	page_id=models.ForeignKey(Page)
+	post_id=models.ForeignKey(Page)
 	post_id=models.CharField(max_length=255,primary_key=True)
 	message=models.TextField(null=True)
 	description=models.TextField(null=True)
