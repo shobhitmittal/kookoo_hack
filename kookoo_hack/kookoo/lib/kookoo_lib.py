@@ -1,6 +1,6 @@
 from lxml import etree
 
-def first_response(message,is_text,sid=None,collectdtmf=False,format_lan=None,lang="EN",character_limit='1',terminal_character='#',timeout_time='5000'):
+def first_response(message,is_text,sid=None,collectdtmf=False,format_lan=None,lang="EN",character_limit='8',terminal_character='#',timeout_time='5000'):
 	#root.append(etree.Element('playtext'))
 	# another child with text
 	if is_text is True and collectdtmf is False:
@@ -25,6 +25,10 @@ def first_response(message,is_text,sid=None,collectdtmf=False,format_lan=None,la
 	data_to_return=etree.tostring(root, xml_declaration=True,encoding='utf-8')
 	print data_to_return
 	return data_to_return
+
+def venue_explain(value,place):
+	talk=str(value)+' '+str(place)+' '
+	return talk
 
 #<?xml version="1.0" encoding="UTF-8"?>
 # <response>     

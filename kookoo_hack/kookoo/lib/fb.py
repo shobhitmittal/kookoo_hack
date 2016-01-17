@@ -19,15 +19,15 @@ def get_posts_data(page_id,access_token,tag_data_dict):
 		for post_data in i['data']:
 			print post_data
 			if 'description' in post_data and 'message' in post_data:
-				nl.nl_main_func(post_data['message'],tag_data_dict)
-				nl.nl_main_func(post_data['description'],tag_data_dict)
 				(post_data_save, post_data_save_status)= models.Posts.objects.update_or_create(post_id=str(post_data['id']), defaults={'page_id': page_post,'message': post_data['message'],'description': post_data['description'],'created_time': post_data['created_time'],'updated_time': post_data['updated_time']})
+				nl.nl_main_func(post_data['message'],str(post_data['id']),tag_data_dict)
+				nl.nl_main_func(post_data['description'],str(post_data['id']),tag_data_dict)
 			elif 'description' not in post_data and 'message' in post_data:
-				nl.nl_main_func(post_data['message'],tag_data_dict)
 				(post_data_save, post_data_save_status)= models.Posts.objects.update_or_create(post_id=str(post_data['id']), defaults={'page_id': page_post,'message': post_data['message'],'created_time': post_data['created_time'],'updated_time': post_data['updated_time']})
+				nl.nl_main_func(post_data['message'],str(post_data['id']),tag_data_dict)
 			elif 'description' in post_data and 'message' not in post_data:
-				nl.nl_main_func(post_data['description'],tag_data_dict)
 				(post_data_save, post_data_save_status)= models.Posts.objects.update_or_create(post_id=str(post_data['id']), defaults={'page_id': page_post,'description': post_data['description'],'created_time': post_data['created_time'],'updated_time': post_data['updated_time']})
+				nl.nl_main_func(post_data['description'],str(post_data['id']),tag_data_dict)
 			else:
 				pass
 			print (post_data_save, post_data_save_status)
