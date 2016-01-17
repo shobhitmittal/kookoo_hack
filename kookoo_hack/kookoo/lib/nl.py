@@ -48,7 +48,10 @@ def fuzzy_tagger(text,tags,isblood=False):
 	return selection
 
 def find_tag(message,tags,blood_group):
-	message=message.encode('utf-8').lower()
+	try:
+		message=message.encode('utf-8').lower()
+	except:
+		pass
 	message=remove_punctuation(message)
 	message=message.split()
 	message= list(set(message))
