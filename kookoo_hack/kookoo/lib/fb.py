@@ -2,11 +2,12 @@ from facepy.utils import get_extended_access_token
 from facepy import GraphAPI
 import json
 from django.conf import settings
+import nl
 from kookoo import models
 from django.db import transaction
 
 @transaction.non_atomic_requests
-def get_posts_data(page_id,access_token):
+def get_posts_data(page_id,access_token,tag_data_dict):
 	graph = GraphAPI(access_token)
 	#page_id= 'flipkart'
 	data= graph.get(page_id+ "/posts?fields=id,created_time,updated_time,message,description&limit=100", page=True, retry=5)
@@ -18,10 +19,14 @@ def get_posts_data(page_id,access_token):
 		for post_data in i['data']:
 			print post_data
 			if 'description' in post_data and 'message' in post_data:
+				nl.nl_main_func(post_data['message'],tag_data_dict)
+				nl.nl_main_func(post_data['description'],tag_data_dict)
 				(post_data_save, post_data_save_status)= models.Posts.objects.update_or_create(post_id=str(post_data['id']), defaults={'page_id': page_post,'message': post_data['message'],'description': post_data['description'],'created_time': post_data['created_time'],'updated_time': post_data['updated_time']})
 			elif 'description' not in post_data and 'message' in post_data:
+				nl.nl_main_func(post_data['message'],tag_data_dict)
 				(post_data_save, post_data_save_status)= models.Posts.objects.update_or_create(post_id=str(post_data['id']), defaults={'page_id': page_post,'message': post_data['message'],'created_time': post_data['created_time'],'updated_time': post_data['updated_time']})
 			elif 'description' in post_data and 'message' not in post_data:
+				nl.nl_main_func(post_data['description'],tag_data_dict)
 				(post_data_save, post_data_save_status)= models.Posts.objects.update_or_create(post_id=str(post_data['id']), defaults={'page_id': page_post,'description': post_data['description'],'created_time': post_data['created_time'],'updated_time': post_data['updated_time']})
 			else:
 				pass
