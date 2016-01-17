@@ -31,7 +31,7 @@ def api_v1_main(request):
 			user_exist_demo= models.Call.objects.filter(sid= request.GET['sid']).exists()
 			if user_exist_demo is True:
 				#irst_response(message,is_text,sid=None,collectdtmf=False,format_lan=None,lang="EN",character_limit=1,terminal_character='#',timeout_time=1000)
-				data= kookoo_lib.first_response(message='Press 1 for A Positive  2 for A Negative  3 for B Positive  4 for B Negative  5 for AB Positive  6 for AB Negative  7 for O Positive  8 for O Negative',is_text=True,sid=str(request.GET['sid']),collectdtmf=True)
+				data= kookoo_lib.first_response(message='Press 1 for A Positive   2 for A Negative   3 for B Positive  4 for B Negative   5 for AB Positive   6 for AB Negative   7 for O Positive   8 for O Negative  press # to submit',is_text=True,sid=str(request.GET['sid']),collectdtmf=True)
 				#time.sleep(3)
 				return HttpResponse(data, content_type='application/xml' )		
 		else:
@@ -66,17 +66,20 @@ def api_v1_main(request):
 			elif request.GET['event']=='GotDTMF':
 				#event=GotDTMF&data={the digits entered by the caller}&sid={call id}
 				data_blood={'1':'a+','8':'o-', '7':'o+','4':'b-', '5':'ab+', '2':'a-', '6':'ab-','3':'b+'}
-				data=kookoo_lib.first_response(message='You have chosen'+data_blood[request.GET['data']],is_text=False,format_lan='1',lang="EN")
-				circle_value= models.Call.objects.values('circle').get(sid=request.GET['sid'])
-				circle_value=circle_value['circle']
-				data_1= models.Tag_table.objects.filter(blood_group=str(data_blood[request.GET['data']])).filter(place__in=models.Places.objects.values_list('place').filter(telecom_circle=circle_value)).values('phone','place')
-				talk_value_list=[]
-				string_respond='The venues for Blood Donation in your telecom circle for blood group '+str(data_blood[request.GET['data']])+' are as follows '
-				for talk_value,value_iter in zip(data_1,xrange(1,len(data_1))):
-					talker_value=kookoo_lib.venue_explain(value_iter,talk_value['place'])
-					string_respond+talker_value
-					print talker_value
-				data= kookoo_lib.first_response(message=string_respond,is_text=True,format_lan=None)
+				if request.GET['data'] in data_blood.keys():
+					data=kookoo_lib.first_response(message='You have chosen '+data_blood[request.GET['data']],is_text=False,format_lan='1',lang="EN")
+					circle_value= models.Call.objects.values('circle').get(sid=request.GET['sid'])
+					circle_value=circle_value['circle']
+					data_1= models.Tag_table.objects.filter(blood_group=str(data_blood[request.GET['data']])).filter(place__in=models.Places.objects.values_list('place').filter(telecom_circle=circle_value)).values('phone','place')
+					talk_value_list=[]
+					string_respond='The venues for Blood Donation in your telecom circle for blood group '+str(data_blood[request.GET['data']])+' are as follows '
+					for talk_value,value_iter in zip(data_1,xrange(1,len(data_1))):
+						talker_value=kookoo_lib.venue_explain(value_iter,talk_value['place'])
+						string_respond+talker_value
+						print talker_value
+					data= kookoo_lib.first_response(message=string_respond,is_text=True,format_lan=None)
+				else:
+					data= kookoo_lib.first_response(message='Some Error Occured.Please try again',is_text=True,format_lan=None)
 				return HttpResponse(data, content_type='application/xml' )
 			else:
 				data= kookoo_lib.first_response(message='Some Error Occured.Please try again',is_text=True,format_lan=None)
