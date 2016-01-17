@@ -19,4 +19,5 @@ in kookoo_hack/manage.py
 
 To run
 <code>sudo bash setup_server.sh</code>
+Then,
 <code>bash run.sh</code>
