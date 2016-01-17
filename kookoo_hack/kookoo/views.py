@@ -87,6 +87,19 @@ def api_v1_fb_parse(request):
 			print (long_lived_access_token_save, long_lived_access_token_save_status)
 		get_long_lived_access_token= models.dev.objects.values('access_token').get(dev_name= dev_name)
 		long_lived_access_token=get_long_lived_access_token['access_token']
+		
+		#tag to 
+		#tag_data_dict={}
+		#telecom_circles=models.Places.objects.values_list('telecom_circle')
+		#for telecom_circle in telecom_circles:
+		#	city_list=models.Places.objects.values_list('places').filter(telecom_circle=telecom_circle[0])
+		#	city_list_modified=[]
+		#	for city_name in city_list:
+		#		city_list_modified.append(city_name[0])
+		#	tag_data_dict[telecom_circle]=city_list_modified
+
+		tag_data_dict=dict(models.Places.objects.values_list('place','telecom_circle'))
+
 		response_data={}
 		if 'fb_source' in request.GET:
 			print request.GET['fb_source'].split(',')
@@ -95,7 +108,7 @@ def api_v1_fb_parse(request):
 				print page_data
 				(page_data_save, page_data_save_status)= models.Page.objects.update_or_create(page_id=str(page_data['id']), defaults={'page_name': page_data['name'],'likes': page_data['likes'],'talking_about_count': page_data['talking_about_count']})
 				print (page_data_save, page_data_save_status)
-				fb.get_posts_data(str(page_data['id']),long_lived_access_token)
+				fb.get_posts_data(str(page_data['id']),long_lived_access_token,tag_data_dict)
 				response_data[page]=True
 		if 'twitter_source' in request.GET:
 			print request.GET['twitter_source'].split(',')
@@ -103,7 +116,7 @@ def api_v1_fb_parse(request):
 				twitter_handle_data= twitter.fetch_twitter_id(twitter_handle)
 				(handle_data_save, handle_data_save_status)= models.Page.objects.update_or_create(page_id=str(twitter_handle_data['id']), defaults={'page_name': str(twitter_handle),'likes': twitter_handle_data['follower_count']})
 				print (handle_data_save, handle_data_save_status)
-				twitter.fetch_twitter_post(twitter_handle_data['id'])
+				twitter.fetch_twitter_post(twitter_handle_data['id'],tag_data_dict)
 				response_data[twitter_handle]=True
 		return HttpResponse(json.dumps(response_data), content_type="application/json")
 
