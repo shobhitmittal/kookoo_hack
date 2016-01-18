@@ -2,6 +2,9 @@
 This is a Blood donation IVR project. It understands the user's location and asks him to select the blood group he wants to donate and then reponds him with a list of places nearby where there is a need for his queried blood group. The project fetches posts from facebook and twitter blood donation pages.
 
 <blockquote>Deploy it on a Server</blockquote>
+<code>python manage.py makemigrations</code>
+
+<code>python manage.py migrate</code>
 
 Enter the relevant data in kookoo_hack/kookoo_hack/settings_server.py
 <code>
